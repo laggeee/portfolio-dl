@@ -10,7 +10,7 @@
     el.style.left = Math.random()*100 + '%';
     el.style.fontSize = (0.8 + Math.random()*1.6) + 'rem';
     el.style.animationDuration = (18 + Math.random()*22) + 's';
-    el.style.animationDelay = (-Math.random()*40) + 's';
+    el.style.animationDelay = (-Math.random()*30) + 's';
     field.appendChild(el);
   }
 
@@ -90,7 +90,7 @@
   window.addEventListener('resize', updateBall);
   updateBall();
 
-  // atalhos da navbar -----------------------------------------------------------------------------------------------------------------------------
+  // Atalhos da navbar -----------------------------------------------------------------------------------------------------------------------------
 
   document.querySelectorAll('.nav-links button[data-target]').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -101,7 +101,7 @@
     });
   });
 
-  // ee do gol -----------------------------------------------------------------------------------------------------------------
+  // EE do gol -----------------------------------------------------------------------------------------------------------------
 
   const goalBtn = document.getElementById('goalBtn');
   let goalAnimating = false;
