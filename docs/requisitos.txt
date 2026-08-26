@@ -1,0 +1,13 @@
+- O usuário pode escolher sua preferência de língua (inglês/português).
+
+- O usuário pode escolher seu "perfil" (Recrutador/Acadêmico/Aventureiro).
+
+- O usuário pode escolher seu interesse (Offsec/Dev).
+
+- O usuário pode optar por abrir um perfil default (rejeitar as escolhas de perfilamento).
+
+- O usuário pode usar a navbar para navegar de forma dinâmica pelo site.
+
+- O usuário pode abrir os links de contato e ser redirecionado para diferentes redes.
+
+- O usuário pode... rolar um d20????

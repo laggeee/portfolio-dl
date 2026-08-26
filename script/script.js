@@ -28,8 +28,8 @@
 
   const TOP_RESERVE = 46;   
   const BOTTOM_RESERVE = 21; 
-  const GOAL_REST_Y = 14;    
-  const EXIT_GOAL = 0.045;   
+  const GOAL_REST_Y = 14;
+  const EXIT_GOAL = 0.045;  
 
   function updateBall(){
     const trackHeight = track.clientHeight;

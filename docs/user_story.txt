@@ -1,0 +1,13 @@
+- Eu, como Usuário Internacional, busco, acima de tudo, informações em uma língua globalizada (inglês), e informações sobre nível de conhecimento da mesma.
+- Eu, como Usuário Nacional, busco, acima de tudo, informações na língua nativa.
+
+- Eu, como Recrutador, busco, acima de tudo, informações técnicas relevantes e provas de experiência.
+- Eu, como Acadêmico, busco, acima de tudo, informações acadêmicas relevantes e informações pessoais do usuário.
+- Eu, como Aventureiro, busco, acima de tudo, documentação detalhada de projetos passados.
+
+- Eu, como Interessado em Engenharia de Software, busco, acima de tudo, provas de competência no desenvolvimento de software seguro.
+- Eu, como Interessado em Segurança Ofensiva, busco, acima de tudo, provas de conhecimento em cibersegurança e documentação Labs/CTF's.
+
+
+
+
