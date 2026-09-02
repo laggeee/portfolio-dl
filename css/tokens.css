@@ -1,0 +1,147 @@
+/* ==========================================================================
+   TOKENS — paleta, tipografia, escala, texturas
+   A classe escolhida pelo visitante repinta o --accent do site inteiro
+   via [data-class] no <html>.
+   ========================================================================== */
+
+:root {
+  /* --- Superfícies: couro, pedra, pergaminho ---------------------------- */
+  --leather-900: #14100c;   /* couro quase preto — fundo base */
+  --leather-800: #1c1712;   /* couro */
+  --leather-700: #261f18;   /* couro claro */
+  --stone-700:   #2e2820;   /* pedra da masmorra */
+
+  --parchment-100: #f4ead2; /* pergaminho novo */
+  --parchment-200: #e9dcbe; /* pergaminho */
+  --parchment-300: #dccca8; /* pergaminho gasto */
+  --parchment-400: #c9b58c; /* borda de pergaminho */
+
+  /* --- Tinta ------------------------------------------------------------ */
+  --ink-900: #241a12;       /* nanquim sobre pergaminho */
+  --ink-700: #453325;
+  --ink-500: #6b5340;       /* texto secundário */
+  --ink-fade: #8a705a;
+
+  /* --- Metais e selos --------------------------------------------------- */
+  --gold-500: #c9a227;      /* dourado gasto — molduras */
+  --gold-400: #dfbb4a;
+  --gold-300: #f0d580;
+  --wax-600:  #8b2318;      /* selo de cera */
+  --wax-500:  #a83324;
+
+  /* --- Raridades de item ------------------------------------------------ */
+  --rarity-comum:    #9a8f7d;
+  --rarity-raro:     #3f7fb5;
+  --rarity-epico:    #8a5cc4;
+  --rarity-lendario: #d08a2c;
+
+  /* --- Vitais ----------------------------------------------------------- */
+  --hp:   #a3311f;
+  --mana: #3d6fa8;
+
+  /* --- Accent da classe (padrão: dourado neutro) ------------------------ */
+  --accent:      var(--gold-500);
+  --accent-soft: #dfbb4a;
+  --accent-glow: rgba(201, 162, 39, .35);
+
+  /* --- Semânticos ------------------------------------------------------- */
+  --bg:        var(--leather-900);
+  --surface:   var(--parchment-200);
+  --text:      var(--ink-900);
+  --text-soft: var(--ink-500);
+  --text-on-dark:      var(--parchment-200);
+  --text-on-dark-soft: #a9967d;
+  --line: rgba(36, 26, 18, .22);
+  --line-on-dark: rgba(201, 162, 39, .22);
+
+  /* --- Tipografia ------------------------------------------------------- */
+  --font-display: "Cinzel", "Trajan Pro", Georgia, serif;
+  --font-body:    "EB Garamond", Georgia, "Times New Roman", serif;
+  --font-dice:    "Grenze Gotisch", "Cinzel", Georgia, serif;
+  --font-mono:    "JetBrains Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+
+  --step--1: clamp(.86rem, .82rem + .2vw, .95rem);
+  --step-0:  clamp(1.05rem, 1rem + .28vw, 1.2rem);
+  --step-1:  clamp(1.3rem, 1.18rem + .6vw, 1.65rem);
+  --step-2:  clamp(1.7rem, 1.42rem + 1.3vw, 2.4rem);
+  --step-3:  clamp(2.2rem, 1.7rem + 2.4vw, 3.6rem);
+  --step-4:  clamp(2.9rem, 2rem + 4.2vw, 5.6rem);
+
+  /* --- Espaço e forma --------------------------------------------------- */
+  --gutter: clamp(1.25rem, 4vw, 3rem);
+  --measure: 62ch;
+  --radius: 3px;          /* pergaminho não tem canto arredondado */
+  --radius-lg: 6px;
+
+  /* --- Sombras ---------------------------------------------------------- */
+  --shadow-sheet: 0 2px 4px rgba(0,0,0,.3), 0 18px 50px -12px rgba(0,0,0,.65);
+  --shadow-card:  0 1px 2px rgba(0,0,0,.35), 0 10px 28px -10px rgba(0,0,0,.55);
+  --shadow-lift:  0 4px 8px rgba(0,0,0,.3), 0 26px 60px -14px rgba(0,0,0,.7);
+
+  /* --- Tempo ------------------------------------------------------------ */
+  --ease-parchment: cubic-bezier(.2, .7, .2, 1);
+  --ease-stamp:     cubic-bezier(.16, 1.24, .3, 1);
+  --dur-fast: 180ms;
+  --dur:      420ms;
+  --dur-slow: 900ms;
+
+  /* --- Texturas (SVG inline, zero requisição) --------------------------- */
+  --noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E");
+
+  --fibers: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='420' height='420'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.012 .09' numOctaves='3'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .26 0 0 0 0 .15 0 0 0 .35 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)'/%3E%3C/svg%3E");
+
+  /* Moldura ornamentada usada em border-image (cantos + fio duplo) */
+  --frame: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' fill='none' stroke='%23c9a227' stroke-width='2'%3E%3Crect x='7' y='7' width='106' height='106'/%3E%3Crect x='13' y='13' width='94' height='94' opacity='.45' stroke-width='1'/%3E%3Cpath d='M7 30V7h23M90 7h23v23M113 90v23H90M30 113H7V90' stroke-width='4'/%3E%3Cpath d='M22 22 30 14M98 22 90 14M22 98l8 8M98 98l-8 8' stroke-width='2' opacity='.7'/%3E%3C/svg%3E");
+}
+
+/* ==========================================================================
+   ACCENT POR CLASSE
+   ========================================================================== */
+
+[data-class="guerreiro"] {
+  --accent: #b03a2b;
+  --accent-soft: #d4593f;
+  --accent-glow: rgba(176, 58, 43, .38);
+}
+
+[data-class="arcanista"] {
+  --accent: #6d4bc0;
+  --accent-soft: #9b7ce0;
+  --accent-glow: rgba(109, 75, 192, .40);
+}
+
+[data-class="ladino"] {
+  --accent: #3f8f6a;
+  --accent-soft: #5fb98c;
+  --accent-glow: rgba(63, 143, 106, .36);
+}
+
+[data-class="clerigo"] {
+  --accent: #c9a227;
+  --accent-soft: #f0d580;
+  --accent-glow: rgba(240, 213, 128, .42);
+}
+
+[data-class="cacador"] {
+  --accent: #8a9a3c;
+  --accent-soft: #b3c45e;
+  --accent-glow: rgba(138, 154, 60, .38);
+}
+
+[data-class="druida"] {
+  --accent: #3f9a8a;
+  --accent-soft: #62c2b0;
+  --accent-glow: rgba(63, 154, 138, .38);
+}
+
+[data-class="paladino"] {
+  --accent: #5f86b8;
+  --accent-soft: #8fb3dd;
+  --accent-glow: rgba(95, 134, 184, .40);
+}
+
+[data-class="bruxo"] {
+  --accent: #a8367f;
+  --accent-soft: #d05fa8;
+  --accent-glow: rgba(168, 54, 127, .40);
+}

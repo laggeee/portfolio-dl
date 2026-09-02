@@ -2,12 +2,9 @@
 - Eu, como Usuário Nacional, busco, acima de tudo, informações na língua nativa.
 
 - Eu, como Recrutador, busco, acima de tudo, informações técnicas relevantes e provas de experiência.
-- Eu, como Acadêmico, busco, acima de tudo, informações acadêmicas relevantes e informações pessoais do usuário.
-- Eu, como Aventureiro, busco, acima de tudo, documentação detalhada de projetos passados.
-
-- Eu, como Interessado em Engenharia de Software, busco, acima de tudo, provas de competência no desenvolvimento de software seguro.
-- Eu, como Interessado em Segurança Ofensiva, busco, acima de tudo, provas de conhecimento em cibersegurança e documentação Labs/CTF's.
-
+- Eu, como Time Técnico, busco, acima de tudo, informações acadêmicas relevantes e informações pessoais do usuário.
+- Eu, como Curioso, busco, acima de tudo, documentação detalhada de projetos passados.
+- Eu, como Aventureiro, não me preocupo com a ordem e busco apenas ver o portfólio como foi projetado.
 
 
 

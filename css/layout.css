@@ -1,0 +1,345 @@
+/* ==========================================================================
+   LAYOUT — topbar, seções-página, grids
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Topbar — abas do grimório
+   -------------------------------------------------------------------------- */
+
+.topbar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  gap: var(--gutter);
+  padding: .7rem var(--gutter);
+  /* O degradê sozinho já separa a barra do conteúdo. backdrop-filter aqui
+     custaria um blur da faixa inteira a cada frame de scroll. */
+  background: linear-gradient(to bottom,
+    rgba(16,12,8,.96) 0%, rgba(16,12,8,.86) 45%, rgba(16,12,8,.5) 75%, transparent 100%);
+}
+
+.topbar__crest {
+  flex: none;
+  width: 2.2rem; height: 2.2rem;
+  color: var(--accent);
+  transition: color var(--dur), transform var(--dur) var(--ease-stamp);
+}
+.topbar__crest:hover { transform: rotate(-6deg) scale(1.08); }
+
+.topbar__nav {
+  display: flex;
+  /* Nunca quebra em duas linhas: numa tela baixa a barra comeria um quarto
+     da altura útil. Em telas estreitas ela vira uma tira rolável. */
+  flex-wrap: nowrap;
+  gap: clamp(.5rem, 2vw, 1.6rem);
+  margin-inline: auto;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  font-family: var(--font-display);
+  font-size: var(--step--1);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--text-on-dark-soft);
+  /* esconde as pontas quando há conteúdo cortado */
+  mask-image: linear-gradient(90deg, transparent 0, #000 1.2rem,
+                                     #000 calc(100% - 1.2rem), transparent 100%);
+}
+.topbar__nav::-webkit-scrollbar { display: none; }
+
+/* Abaixo de 60rem os algarismos romanos saem: são ornamento, não navegação */
+@media (max-width: 60rem) {
+  .topbar__nav a i { display: none; }
+  .topbar__nav { letter-spacing: .04em; }
+}
+
+.topbar__nav a {
+  position: relative;
+  padding: .25rem 0;
+  transition: color var(--dur-fast);
+}
+.topbar__nav a i {
+  font-style: normal;
+  font-size: .78em;
+  color: var(--accent);
+  opacity: .7;
+  margin-right: .35em;
+}
+.topbar__nav a::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 1px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--dur) var(--ease-parchment);
+}
+.topbar__nav a:hover { color: var(--parchment-100); }
+.topbar__nav a:hover::after { transform: scaleX(1); }
+
+/* --------------------------------------------------------------------------
+   Hero
+   -------------------------------------------------------------------------- */
+
+.hero {
+  position: relative;
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  padding: 7rem var(--gutter) 5rem;
+  isolation: isolate;
+}
+
+/* Raios de luz vindos do alto — luminária sobre a mesa */
+.hero__rays {
+  position: absolute;
+  inset: -20% -10% auto;
+  height: 90%;
+  z-index: -1;
+  background:
+    conic-gradient(from 190deg at 50% 0%,
+      transparent 0deg, var(--accent-glow) 8deg, transparent 16deg,
+      transparent 28deg, rgba(240,213,128,.10) 34deg, transparent 42deg,
+      transparent 320deg, rgba(240,213,128,.08) 328deg, transparent 336deg);
+  filter: blur(14px);
+  opacity: .8;
+  mask-image: linear-gradient(to bottom, #000 0%, transparent 85%);
+}
+
+/* Névoa que respira no rodapé do hero */
+.hero__mist {
+  position: absolute;
+  inset: auto 0 0;
+  height: 45%;
+  z-index: -1;
+  background:
+    radial-gradient(60% 100% at 20% 100%, rgba(120,100,70,.20), transparent 70%),
+    radial-gradient(50% 100% at 75% 100%, rgba(90,80,60,.18), transparent 70%);
+  filter: blur(20px);
+}
+
+.scroll-hint {
+  position: absolute;
+  bottom: 1.8rem;
+  left: 50%;
+  translate: -50% 0;
+  display: grid;
+  justify-items: center;
+  gap: .4rem;
+  font-family: var(--font-display);
+  font-size: .68rem;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--text-on-dark-soft);
+}
+.scroll-hint svg { width: 1.1rem; color: var(--accent); }
+
+/* O perfil de acesso reordena as seções por `order`, então o main precisa
+   ser um contexto flex — reordenar por CSS evita mexer no DOM e mantém a
+   ordem do documento (que é a que leitores de tela seguem) intacta. */
+main { display: flex; flex-direction: column; }
+
+/* Item de flex nasce com min-width: auto e se recusa a encolher abaixo do
+   conteúdo — foi o que passou a empurrar a página para os lados assim que
+   o main virou flex. Mesma armadilha do min-height nas colunas da arena. */
+main > section { min-width: 0; }
+
+/* --------------------------------------------------------------------------
+   Seções-página
+   -------------------------------------------------------------------------- */
+
+.page {
+  position: relative;
+  padding: clamp(5rem, 12vh, 9rem) var(--gutter);
+}
+
+/* Painéis claros: o pergaminho aberto sobre a mesa */
+.page:not(.page--dark) {
+  color: var(--text);
+  background-color: var(--parchment-200);
+  background-image:
+    var(--fibers),
+    radial-gradient(120% 90% at 50% 0%, rgba(255,255,255,.5), transparent 60%),
+    radial-gradient(80% 60% at 8% 100%, rgba(150,120,80,.22), transparent 60%),
+    radial-gradient(80% 60% at 95% 20%, rgba(150,120,80,.18), transparent 55%);
+  background-size: 420px 420px, cover, cover, cover;
+  box-shadow: inset 0 0 90px rgba(90,65,35,.35);
+}
+
+/* Bordas irregulares: o pergaminho não é um retângulo perfeito */
+.page:not(.page--dark)::before,
+.page:not(.page--dark)::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0;
+  height: 14px;
+  background: repeating-linear-gradient(90deg,
+    var(--parchment-200) 0 11px, transparent 11px 13px);
+  mask-image: linear-gradient(to bottom, #000, transparent);
+}
+.page:not(.page--dark)::before { top: -12px; }
+.page:not(.page--dark)::after  { bottom: -12px; rotate: 180deg; }
+
+.page--dark { color: var(--text-on-dark); }
+
+.page__inner {
+  width: min(100%, 72rem);
+  margin-inline: auto;
+}
+.page__inner--wide { width: min(100%, 88rem); }
+
+/* --------------------------------------------------------------------------
+   Cabeçalho de capítulo
+   -------------------------------------------------------------------------- */
+
+.chapter {
+  text-align: center;
+  margin-bottom: clamp(2.5rem, 6vh, 4.5rem);
+}
+
+.chapter__num {
+  display: block;
+  font-family: var(--font-display);
+  font-size: var(--step--1);
+  letter-spacing: .3em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: .8rem;
+}
+
+.chapter__title {
+  font-size: var(--step-3);
+  font-weight: 900;
+  letter-spacing: .02em;
+}
+
+.chapter--light .chapter__title { color: var(--parchment-100); }
+
+/* Filete ornamentado sob o título */
+.chapter__rule {
+  width: min(22rem, 70%);
+  height: 14px;
+  margin: 1.1rem auto 0;
+  color: var(--accent);
+  background:
+    linear-gradient(currentColor, currentColor) center/100% 1px no-repeat;
+  position: relative;
+  opacity: .75;
+}
+.chapter__rule::before,
+.chapter__rule::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 9px; height: 9px;
+  translate: 0 -50%;
+  rotate: 45deg;
+  background: currentColor;
+}
+.chapter__rule::before { left: calc(50% - 5px); }
+.chapter__rule::after  { left: calc(50% - 5px); scale: .45; background: var(--parchment-200); }
+
+.chapter__lead {
+  max-width: 46ch;
+  margin: 1.2rem auto 0;
+  font-size: var(--step-0);
+  font-style: italic;
+  color: var(--text-soft);
+}
+.chapter--light .chapter__lead { color: var(--text-on-dark-soft); }
+
+/* --------------------------------------------------------------------------
+   Origem — prosa + statblock
+   -------------------------------------------------------------------------- */
+
+.origin {
+  display: grid;
+  gap: clamp(2rem, 5vw, 3.5rem);
+  grid-template-columns: 1fr;
+  align-items: start;
+}
+
+@media (min-width: 62rem) {
+  .origin { grid-template-columns: 1.35fr 1fr; }
+}
+
+/* --------------------------------------------------------------------------
+   Atributos
+   -------------------------------------------------------------------------- */
+
+.attrs {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  margin-bottom: clamp(2.5rem, 6vh, 4rem);
+}
+
+/* --------------------------------------------------------------------------
+   Inventário
+   -------------------------------------------------------------------------- */
+
+.loot {
+  display: grid;
+  gap: clamp(1.2rem, 3vw, 2rem);
+  grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+  perspective: 1400px;
+}
+
+/* --------------------------------------------------------------------------
+   Diário de campanha — linha do tempo
+   -------------------------------------------------------------------------- */
+
+.timeline {
+  /* Fonte única das medidas do trilho: o eixo da linha, os losangos das
+     entradas e o recuo do texto saem todos daqui. */
+  --timeline-pad: 3rem;
+  --trail-x: .82rem;
+
+  position: relative;
+  display: grid;
+  gap: clamp(2rem, 5vh, 3.4rem);
+  padding-left: var(--timeline-pad);
+  list-style: none;
+}
+
+/* Trilho vertical; o preenchimento vive em animations.css */
+.timeline::before {
+  content: "";
+  position: absolute;
+  top: .5rem; bottom: .5rem; left: var(--trail-x);
+  width: 2px;
+  background: var(--line-on-dark);
+}
+
+/* --------------------------------------------------------------------------
+   Selos de guilda — certificações
+   -------------------------------------------------------------------------- */
+
+.seals {
+  display: grid;
+  gap: clamp(1.2rem, 3vw, 2rem);
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  list-style: none;
+  padding: 0;
+}
+/* --------------------------------------------------------------------------
+   Rodapé
+   -------------------------------------------------------------------------- */
+
+.footer {
+  padding: 3.5rem var(--gutter) 4rem;
+  text-align: center;
+  font-size: var(--step--1);
+  color: var(--text-on-dark-soft);
+  border-top: 1px solid var(--line-on-dark);
+}
+.footer__flavor {
+  margin-top: .4rem;
+  font-style: italic;
+  color: var(--accent);
+  opacity: .8;
+}
