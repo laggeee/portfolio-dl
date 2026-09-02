@@ -1,0 +1,195 @@
+/* ==========================================================================
+   ANIMAÇÕES
+   Duas camadas:
+   1. .reveal + IntersectionObserver  -> entrada de elementos (funciona em tudo)
+   2. animation-timeline nativo       -> efeitos contínuos amarrados ao scroll
+                                         (progressive enhancement)
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Sistema de reveal
+   -------------------------------------------------------------------------- */
+
+/* Só escondemos o conteúdo se o JS estiver ativo para revelá-lo de volta.
+   Sem .js (script bloqueado, erro de rede, browser antigo) tudo nasce
+   visível — animação é enfeite, texto é o produto. */
+:where(.js) .reveal {
+  --delay: calc(var(--i, 0) * 90ms);
+  opacity: 0;
+}
+
+/* will-change só enquanto o elemento está de fato animando.
+   Mantê-lo fixo em dezenas de elementos segura uma camada de composição
+   para cada um e derruba a performance de scroll. */
+.reveal.is-animating { will-change: opacity, transform, filter; }
+
+/* Virada de página: a folha assenta na mesa */
+:where(.js) .reveal[data-reveal="page"] {
+  transform: perspective(1200px) rotateX(-9deg) translateY(38px);
+  filter: blur(6px);
+  transform-origin: 50% 0%;
+}
+
+/* Carimbo: o selo bate no papel */
+:where(.js) .reveal[data-reveal="stamp"] {
+  transform: scale(1.14);
+  filter: blur(10px);
+}
+
+/* Rolagem de dado: o valor salta antes de assentar */
+:where(.js) .reveal[data-reveal="roll"] {
+  transform: translateY(26px) scale(.96);
+}
+
+/* Tinta: o título é escrito da esquerda para a direita */
+:where(.js) .reveal[data-reveal="ink"] { opacity: 1; }
+:where(.js) .reveal[data-reveal="ink"] > * {
+  opacity: 0;
+  clip-path: inset(0 100% 0 0);
+}
+
+/* --- estado revelado ----------------------------------------------------- */
+
+.reveal.is-revealed {
+  opacity: 1;
+  transform: none;
+  filter: none;
+  transition:
+    opacity var(--dur-slow) var(--ease-parchment) var(--delay),
+    transform var(--dur-slow) var(--ease-parchment) var(--delay),
+    filter var(--dur-slow) var(--ease-parchment) var(--delay);
+}
+
+.reveal[data-reveal="stamp"].is-revealed {
+  transition:
+    opacity 500ms ease var(--delay),
+    transform 800ms var(--ease-stamp) var(--delay),
+    filter 500ms ease var(--delay);
+}
+
+.reveal[data-reveal="ink"].is-revealed > * {
+  opacity: 1;
+  clip-path: inset(0 0 0 0);
+  transition:
+    clip-path 1100ms var(--ease-parchment) var(--ink-delay, 0ms),
+    opacity 260ms ease var(--ink-delay, 0ms);
+}
+.reveal[data-reveal="ink"].is-revealed > *:nth-child(1) { --ink-delay: 0ms; }
+.reveal[data-reveal="ink"].is-revealed > *:nth-child(2) { --ink-delay: 180ms; }
+.reveal[data-reveal="ink"].is-revealed > *:nth-child(3) { --ink-delay: 420ms; }
+.reveal[data-reveal="ink"].is-revealed > *:nth-child(4) { --ink-delay: 620ms; }
+
+/* --------------------------------------------------------------------------
+   2. Efeitos contínuos amarrados ao scroll (nativo, com fallback silencioso)
+   -------------------------------------------------------------------------- */
+
+@supports (animation-timeline: view()) {
+
+  /* O trilho do diário é desenhado conforme você desce a seção */
+  .timeline {
+    position: relative;
+  }
+  .timeline::after {
+    content: "";
+    position: absolute;
+    top: .5rem; left: var(--trail-x);
+    width: 2px;
+    height: calc(100% - 1rem);
+    background: linear-gradient(var(--accent), var(--accent-soft));
+    box-shadow: 0 0 12px var(--accent-glow);
+    transform-origin: top;
+    animation: draw-trail linear both;
+    animation-timeline: view();
+    animation-range: entry 15% cover 65%;
+  }
+
+  /* A ficha do hero afunda levemente ao sair — parallax sutil */
+  .sheet {
+    animation: sink-away linear both;
+    animation-timeline: view();
+    animation-range: exit 0% exit 100%;
+  }
+
+  /* Névoa do hero desliza em contraponto */
+  .hero__mist {
+    animation: drift linear both;
+    animation-timeline: view(block);
+    animation-range: cover 0% cover 100%;
+  }
+}
+
+/* Fallback: sem scroll-timeline, o trilho aparece completo e estático */
+@supports not (animation-timeline: view()) {
+  .timeline::before { background: linear-gradient(var(--accent), transparent 85%); opacity: .5; }
+}
+
+/* --------------------------------------------------------------------------
+   Keyframes
+   -------------------------------------------------------------------------- */
+
+@keyframes draw-trail {
+  from { scale: 1 0; }
+  to   { scale: 1 1; }
+}
+
+@keyframes sink-away {
+  from { transform: translateY(0) scale(1);       opacity: 1; }
+  to   { transform: translateY(-40px) scale(.94); opacity: .25; }
+}
+
+@keyframes drift {
+  from { translate: -4% 0; }
+  to   { translate: 4% 0; }
+}
+
+@keyframes ritual-in {
+  from { opacity: 0; transform: translateY(26px) scale(.97); filter: blur(8px); }
+  to   { opacity: 1; transform: none; filter: none; }
+}
+
+@keyframes ritual-out {
+  to { opacity: 0; transform: scale(1.06); filter: blur(12px); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: .45; }
+  50%      { opacity: .85; }
+}
+
+/* A dica de scroll flutua */
+@keyframes bob {
+  0%, 100% { transform: translateY(0); opacity: .6; }
+  50%      { transform: translateY(7px); opacity: 1; }
+}
+.scroll-hint svg { animation: bob 2.4s ease-in-out infinite; }
+
+/* As barras de perícia enchem junto com a rolagem do número */
+@keyframes fill-bar {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+.reveal.is-revealed .attr__bar i {
+  animation: fill-bar 1100ms var(--ease-parchment) 300ms both;
+}
+
+/* --------------------------------------------------------------------------
+   Respeito a prefers-reduced-motion
+   -------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+
+  .reveal,
+  .reveal > * {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+    clip-path: none !important;
+  }
+}

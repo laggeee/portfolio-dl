@@ -1,0 +1,10 @@
+{
+  "name": "true-port",
+  "private": true,
+  "type": "module",
+  "description": "Portfolio-grimorio com arena de combate por turnos",
+  "scripts": {
+    "simular": "node tools/simular.mjs",
+    "servir": "python tools/servidor.py 5178"
+  }
+}

@@ -1,13 +1,19 @@
-- O usuário pode escolher sua preferência de língua (inglês/português).
+RF01 - O usuário pode escolher sua preferência de língua (inglês/português).
 
-- O usuário pode escolher seu "perfil" (Recrutador/Acadêmico/Aventureiro).
+RF02 - O usuário pode escolher seu "perfil" (Recrutador/Time Técnico/Curioso).
 
-- O usuário pode escolher seu interesse (Offsec/Dev).
+RF03 - O usuário pode optar por abrir um perfil default (Aventureiro).
 
-- O usuário pode optar por abrir um perfil default (rejeitar as escolhas de perfilamento).
+RF04 - O usuário pode escolher uma classe que personaliza as cores da experiência.
 
-- O usuário pode usar a navbar para navegar de forma dinâmica pelo site.
+RF05 - O usuário pode usar a navbar para navegar de forma dinâmica pelo site.
 
-- O usuário pode abrir os links de contato e ser redirecionado para diferentes redes.
+RF06 - O usuário pode abrir os links de contato e ser redirecionado para diferentes redes.
 
-- O usuário pode... rolar um d20????
+RF07 - O usuário pode ver as diferentes seções do portfólio.
+
+RF08 - O usuário pode jogar na arena.
+
+-----------------------------------------------------------------------------------------------
+
+RNF01 - O sistema deve rodar em diferentes navegadores (chrome,firefox,edge)

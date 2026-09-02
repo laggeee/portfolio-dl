@@ -1,0 +1,110 @@
+/* ==========================================================================
+   BASE — reset, texturas de fundo, tipografia
+   ========================================================================== */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+* { margin: 0; }
+
+html {
+  scroll-behavior: smooth;
+  /* âncoras não passam por baixo da topbar */
+  scroll-padding-top: 6rem;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  min-height: 100svh;
+  font-family: var(--font-body);
+  font-size: var(--step-0);
+  line-height: 1.65;
+  color: var(--text-on-dark);
+  background-color: var(--bg);
+  overflow-x: hidden;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Couro escuro: manchas radiais + grão fino, tudo em CSS */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  background:
+    radial-gradient(120% 80% at 50% -10%, #35291d 0%, transparent 60%),
+    radial-gradient(90% 60% at 12% 110%, #2a2015 0%, transparent 55%),
+    radial-gradient(70% 50% at 88% 30%, #241c14 0%, transparent 60%),
+    var(--leather-900);
+}
+
+/* Grão sobre o couro. Sem mix-blend-mode de propósito: misturar uma camada
+   fixa com a página inteira força um contexto de blending que repinta a
+   cada frame de scroll. Opacidade baixa entrega o mesmo efeito de graça. */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-image: var(--noise);
+  opacity: .035;
+  pointer-events: none;
+}
+
+img, svg, video { display: block; max-width: 100%; }
+
+svg { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+/* :where() zera a especificidade do reset. Sem isso, `ol[role="list"]`
+   (0,1,1) vence qualquer classe de componente (0,1,0) e come o padding —
+   foi o que jogava o texto do diário por cima do trilho. */
+:where(ul[role="list"], ol[role="list"]) { list-style: none; padding: 0; }
+
+a { color: inherit; text-decoration: none; }
+
+button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+
+:focus-visible {
+  outline: 2px solid var(--accent-soft);
+  outline-offset: 3px;
+}
+
+/* --------------------------------------------------------------------------
+   Tipografia
+   -------------------------------------------------------------------------- */
+
+h1, h2, h3 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: .01em;
+  text-wrap: balance;
+}
+
+p { text-wrap: pretty; }
+
+em { font-style: italic; }
+
+::selection {
+  background: var(--accent);
+  color: var(--parchment-100);
+}
+
+/* --------------------------------------------------------------------------
+   Utilitários
+   -------------------------------------------------------------------------- */
+
+.dot { color: var(--accent); padding-inline: .35em; }
+
+.linkish {
+  font-size: var(--step--1);
+  color: var(--accent-soft);
+  border-bottom: 1px dotted currentColor;
+  padding-bottom: 1px;
+}
+.linkish:hover { color: var(--gold-300); }
+
+[hidden] { display: none !important; }
+
+/* Trava o scroll enquanto o ritual de classe está aberto */
+body.is-locked { overflow: hidden; }

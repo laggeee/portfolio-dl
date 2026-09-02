@@ -1,0 +1,1124 @@
+/* ==========================================================================
+   COMPONENTES
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Botões
+   -------------------------------------------------------------------------- */
+
+.btn {
+  --btn-fg: var(--parchment-100);
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .65rem 1.5rem;
+  font-family: var(--font-display);
+  font-size: var(--step--1);
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--btn-fg);
+  background: linear-gradient(rgba(255,255,255,.06), rgba(0,0,0,.22));
+  border: 1px solid var(--accent);
+  border-radius: var(--radius);
+  position: relative;
+  overflow: hidden;
+  transition:
+    transform var(--dur-fast) var(--ease-stamp),
+    box-shadow var(--dur),
+    background-color var(--dur);
+}
+
+/* Brilho que atravessa o botão no hover — reflexo em metal */
+.btn::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,.28) 50%, transparent 60%);
+  translate: -120% 0;
+  transition: translate 620ms var(--ease-parchment);
+}
+.btn:hover::after { translate: 120% 0; }
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 0 1px var(--accent), 0 8px 24px -8px var(--accent-glow);
+}
+.btn:active { transform: translateY(0); }
+
+.btn--primary {
+  color: #1a120b;
+  background: linear-gradient(var(--accent-soft), var(--accent));
+  border-color: var(--accent-soft);
+}
+
+.btn--ghost { border-color: var(--line-on-dark); }
+
+.btn--sm { padding: .45rem 1rem; font-size: .72rem; }
+
+/* Em pergaminho claro o botão fantasma precisa de tinta escura */
+.page:not(.page--dark) .btn { color: var(--ink-900); }
+.page:not(.page--dark) .btn--primary { color: #1a120b; }
+.page:not(.page--dark) .btn--ghost { border-color: var(--line); }
+
+/* --------------------------------------------------------------------------
+   Ritual de escolha de classe
+   -------------------------------------------------------------------------- */
+
+.ritual {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  justify-items: center;
+  /* `safe center` em vez de `center`: quando o conteúdo passa da tela, o
+     centralizado empurra o topo para fora e ele fica inalcançável mesmo
+     rolando. Com `safe`, o alinhamento cai para o início nesse caso. */
+  align-content: safe center;
+  padding: var(--gutter);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+/* fixed, não absolute: dentro de um container que rola, um véu absoluto
+   é dimensionado pela área visível e rola junto com o conteúdo — era isso
+   que descobria o portfólio ao rolar a escolha de classe. */
+.ritual__veil {
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(60% 60% at 50% 40%, rgba(40,30,18,.9), rgba(8,6,4,.98)),
+    var(--leather-900);
+}
+.ritual__veil::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: var(--noise);
+  opacity: .06;
+}
+
+.ritual__content {
+  position: relative;
+  width: min(100%, 64rem);
+  text-align: center;
+  animation: ritual-in 700ms var(--ease-parchment) both;
+}
+
+.ritual__kicker {
+  font-family: var(--font-display);
+  font-size: var(--step--1);
+  letter-spacing: .32em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.ritual__title {
+  font-size: var(--step-3);
+  font-weight: 900;
+  color: var(--parchment-100);
+  margin: .5rem 0 .8rem;
+}
+
+.ritual__lead {
+  max-width: 48ch;
+  margin: 0 auto 2.5rem;
+  font-style: italic;
+  color: var(--text-on-dark-soft);
+}
+
+.classes {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  margin-bottom: 2rem;
+}
+
+.class-card {
+  display: grid;
+  gap: .4rem;
+  justify-items: center;
+  width: 100%;
+  height: 100%;
+  padding: 1.6rem 1.1rem;
+  text-align: center;
+  background: linear-gradient(rgba(255,255,255,.04), rgba(0,0,0,.3));
+  border: 1px solid var(--line-on-dark);
+  border-radius: var(--radius);
+  transition:
+    transform var(--dur) var(--ease-stamp),
+    border-color var(--dur),
+    box-shadow var(--dur),
+    background-color var(--dur);
+}
+
+/* Cada carta pré-visualiza o accent da sua classe */
+.class-card[data-pick="guerreiro"] { --preview: #d4593f; }
+.class-card[data-pick="arcanista"] { --preview: #9b7ce0; }
+.class-card[data-pick="ladino"]    { --preview: #5fb98c; }
+.class-card[data-pick="clerigo"]   { --preview: #f0d580; }
+.class-card[data-pick="cacador"]   { --preview: #b3c45e; }
+.class-card[data-pick="druida"]    { --preview: #62c2b0; }
+.class-card[data-pick="paladino"]  { --preview: #8fb3dd; }
+.class-card[data-pick="bruxo"]     { --preview: #d05fa8; }
+
+.class-card:hover,
+.class-card:focus-visible {
+  transform: translateY(-6px);
+  border-color: var(--preview);
+  box-shadow: 0 0 0 1px var(--preview), 0 18px 40px -16px var(--preview);
+}
+
+.class-card__sigil {
+  width: 3.2rem; height: 3.2rem;
+  color: var(--preview);
+  margin-bottom: .3rem;
+  transition: transform var(--dur-slow) var(--ease-parchment);
+}
+.class-card:hover .class-card__sigil { transform: rotate(360deg) scale(1.08); }
+
+.class-card__name {
+  font-family: var(--font-display);
+  font-size: var(--step-1);
+  font-weight: 700;
+  color: var(--parchment-100);
+}
+
+.class-card__tag {
+  font-size: .7rem;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--preview);
+}
+
+.class-card__desc {
+  font-size: var(--step--1);
+  line-height: 1.5;
+  color: var(--text-on-dark-soft);
+}
+
+.class-card__stat {
+  margin-top: .5rem;
+  padding: .2rem .7rem;
+  font-size: .72rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--parchment-200);
+  border: 1px solid var(--line-on-dark);
+  border-radius: 99px;
+}
+.class-card__stat b { color: var(--preview); }
+
+/* --------------------------------------------------------------------------
+   Trilha de XP
+   -------------------------------------------------------------------------- */
+
+.xp-track {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 70;
+  height: 3px;
+  background: rgba(0,0,0,.5);
+}
+
+.xp-track__fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--accent), var(--accent-soft), var(--gold-300));
+  box-shadow: 0 0 12px var(--accent-glow);
+  transform-origin: left;
+}
+
+/* O nível vive na topbar, alinhado com a navegação — não flutuando
+   sobre a trilha de XP. */
+.topbar__level {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  font-family: var(--font-display);
+  font-size: var(--step--1);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--accent);
+}
+
+/* losango de marcador, na mesma linguagem do filete dos capítulos */
+.topbar__level::before {
+  content: "";
+  width: 7px; height: 7px;
+  rotate: 45deg;
+  background: currentColor;
+  opacity: .8;
+}
+
+/* --------------------------------------------------------------------------
+   Ficha do hero
+   -------------------------------------------------------------------------- */
+
+.sheet {
+  position: relative;
+  width: min(100%, 52rem);
+  padding: clamp(2.2rem, 6vw, 4rem) clamp(1.5rem, 5vw, 3.5rem);
+  text-align: center;
+  color: var(--text);
+  background-color: var(--parchment-100);
+  background-image:
+    var(--fibers),
+    radial-gradient(90% 70% at 50% 0%, rgba(255,255,255,.6), transparent 65%),
+    radial-gradient(70% 60% at 5% 100%, rgba(140,110,70,.28), transparent 60%);
+  background-size: 420px 420px, cover, cover;
+  border: 14px solid transparent;
+  border-image: var(--frame) 30 / 30px / 0 round;
+  box-shadow: var(--shadow-sheet), inset 0 0 70px rgba(120,90,50,.35);
+}
+
+/* Cantoneiras de metal presas ao pergaminho */
+.sheet__corner {
+  position: absolute;
+  width: 1.5rem; height: 1.5rem;
+  border: 2px solid var(--accent);
+  opacity: .55;
+}
+.sheet__corner--tl { top: .5rem;    left: .5rem;    border-right: 0; border-bottom: 0; }
+.sheet__corner--tr { top: .5rem;    right: .5rem;   border-left: 0;  border-bottom: 0; }
+.sheet__corner--bl { bottom: .5rem; left: .5rem;    border-right: 0; border-top: 0; }
+.sheet__corner--br { bottom: .5rem; right: .5rem;   border-left: 0;  border-top: 0; }
+
+.sheet__kicker {
+  font-family: var(--font-display);
+  font-size: .7rem;
+  letter-spacing: .3em;
+  text-transform: uppercase;
+  color: var(--ink-fade);
+}
+
+.sheet__name {
+  font-size: var(--step-4);
+  font-weight: 900;
+  letter-spacing: .02em;
+  margin: .6rem 0 .5rem;
+  color: var(--ink-900);
+}
+
+.sheet__title {
+  font-size: var(--step-0);
+  color: var(--text-soft);
+}
+.sheet__title b { color: var(--ink-900); font-weight: 600; }
+
+/* Marcas — os três números reais da ficha */
+.tally {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  margin: 2rem auto 1.8rem;
+  max-width: 36rem;
+  list-style: none;
+  padding: 0;
+}
+
+.tally__item {
+  display: grid;
+  gap: .25rem;
+  justify-items: center;
+  padding: .8rem .5rem;
+  border-left: 1px solid var(--line);
+}
+.tally__item:first-child { border-left: 0; }
+
+.tally__num {
+  font-family: var(--font-dice);
+  font-size: clamp(2rem, 1.4rem + 2vw, 2.9rem);
+  font-weight: 800;
+  line-height: 1;
+  color: var(--wax-600);
+  font-variant-numeric: tabular-nums;
+}
+.tally__num sup { font-size: .5em; vertical-align: super; }
+
+.tally__label {
+  font-family: var(--font-display);
+  font-size: .62rem;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--ink-fade);
+}
+
+.sheet__lead {
+  max-width: 52ch;
+  margin: 1.2rem auto 0;
+  font-size: var(--step-0);
+  color: var(--text-soft);
+}
+
+.sheet__surname { color: var(--wax-600); }
+
+.sheet__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .8rem;
+  justify-content: center;
+  margin-top: 2rem;
+}
+.sheet .btn { color: var(--ink-900); }
+.sheet .btn--primary { color: #1a120b; }
+
+.sheet__class {
+  margin-top: 1.4rem;
+  font-size: var(--step--1);
+  color: var(--text-soft);
+}
+.sheet__class b { color: var(--accent); font-weight: 600; }
+.sheet__class .linkish { color: var(--ink-500); margin-left: .4rem; }
+
+/* --------------------------------------------------------------------------
+   Prosa
+   -------------------------------------------------------------------------- */
+
+.prose { max-width: var(--measure); display: grid; gap: 1.1rem; }
+.prose p { color: var(--ink-700); }
+
+/* Capitular — a letra grande do início do capítulo */
+.prose__drop::first-letter {
+  float: left;
+  font-family: var(--font-display);
+  font-size: 3.6em;
+  font-weight: 900;
+  line-height: .78;
+  margin: .08em .12em 0 0;
+  color: var(--wax-600);
+}
+
+/* --------------------------------------------------------------------------
+   Statblock
+   -------------------------------------------------------------------------- */
+
+.statblock {
+  padding: 1.5rem 1.6rem;
+  background: linear-gradient(rgba(255,255,255,.35), rgba(200,170,120,.15));
+  border: 1px solid var(--parchment-400);
+  border-top: 3px solid var(--wax-600);
+  border-bottom: 3px solid var(--wax-600);
+  box-shadow: var(--shadow-card);
+}
+
+.statblock__name {
+  font-size: var(--step-1);
+  color: var(--wax-600);
+  letter-spacing: .03em;
+}
+
+.statblock__rule {
+  height: 4px;
+  margin: .6rem 0 1rem;
+  background: var(--wax-600);
+  clip-path: polygon(0 0, 100% 0, calc(100% - 6px) 100%, 0 100%);
+}
+
+.statblock__list { display: grid; gap: .55rem; }
+.statblock__list > div {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: .5rem;
+  align-items: baseline;
+  padding-bottom: .5rem;
+  border-bottom: 1px dotted var(--line);
+}
+.statblock__list > div:last-child { border-bottom: 0; padding-bottom: 0; }
+
+.statblock dt {
+  font-family: var(--font-display);
+  font-size: .72rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--ink-500);
+}
+.statblock dd { margin: 0; font-size: var(--step--1); color: var(--ink-900); }
+.statblock dd span { color: var(--ink-fade); font-style: italic; }
+
+/* --------------------------------------------------------------------------
+   Atributos
+   -------------------------------------------------------------------------- */
+
+.attr {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  /* O nome ocupa a linha inteira: "Lógica / Resolução de Problemas" não cabe
+     dividindo espaço com o selo de rank sem quebrar em quatro linhas. */
+  grid-template-areas:
+    "abbr name  name"
+    "abbr score rank"
+    "abbr bar   bar"
+    "abbr desc  desc";
+  gap: .35rem .9rem;
+  align-items: center;
+  padding: 1.1rem 1.3rem;
+  background: linear-gradient(rgba(255,255,255,.045), rgba(0,0,0,.3));
+  border: 1px solid var(--line-on-dark);
+  border-left: 3px solid var(--accent);
+  transition: transform var(--dur) var(--ease-parchment), box-shadow var(--dur), border-color var(--dur);
+}
+.attr:hover {
+  transform: translateX(4px);
+  border-color: var(--accent);
+  box-shadow: -4px 0 20px -8px var(--accent-glow);
+}
+
+.attr__abbr {
+  grid-area: abbr;
+  display: grid;
+  place-items: center;
+  width: 3.4rem; height: 3.4rem;
+  font-family: var(--font-display);
+  font-size: .78rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  background: rgba(0,0,0,.35);
+}
+
+.attr__score {
+  grid-area: score;
+  display: flex;
+  align-items: baseline;
+  gap: .15rem;
+  font-family: var(--font-dice);
+  line-height: 1;
+  color: var(--parchment-100);
+  font-variant-numeric: tabular-nums;
+}
+.attr__score b {
+  font-size: 2.1rem;
+  font-weight: 800;
+  /* largura fixa: o número troca durante a rolagem e não pode empurrar o
+     resto da linha a cada troca */
+  min-width: 2.4ch;
+  display: inline-block;
+}
+.attr__score i {
+  font-style: normal;
+  font-size: .95rem;
+  color: var(--text-on-dark-soft);
+}
+
+/* Barra da perícia */
+.attr__bar {
+  grid-area: bar;
+  height: 5px;
+  background: rgba(0,0,0,.45);
+  border: 1px solid var(--line-on-dark);
+  overflow: hidden;
+}
+.attr__bar i {
+  display: block;
+  height: 100%;
+  width: var(--fill);
+  background: linear-gradient(90deg, var(--accent), var(--accent-soft));
+  box-shadow: 0 0 10px -2px var(--accent-glow);
+  transform-origin: left;
+}
+
+.attr__rank {
+  grid-area: rank;
+  align-self: center;
+  justify-self: end;
+  padding: .1rem .6rem;
+  font-family: var(--font-display);
+  font-size: .6rem;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--accent);
+  border: 1px solid var(--line-on-dark);
+  border-radius: 99px;
+  white-space: nowrap;
+}
+
+.attr__name {
+  grid-area: name;
+  font-family: var(--font-display);
+  font-size: .78rem;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  line-height: 1.35;
+  text-wrap: balance;
+  color: var(--parchment-200);
+}
+
+.attr__desc {
+  grid-area: desc;
+  font-size: var(--step--1);
+  line-height: 1.4;
+  color: var(--text-on-dark-soft);
+}
+
+/* --- Proficiências --- */
+
+.prof { text-align: center; }
+.prof__title {
+  font-size: var(--step-1);
+  color: var(--parchment-100);
+  margin-bottom: 1.2rem;
+}
+.prof__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .6rem;
+  justify-content: center;
+  list-style: none;
+  padding: 0;
+}
+.prof__list li {
+  padding: .35rem 1rem;
+  font-family: var(--font-display);
+  font-size: .72rem;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--text-on-dark-soft);
+  border: 1px solid var(--line-on-dark);
+  border-radius: 99px;
+  transition: color var(--dur-fast), border-color var(--dur-fast), transform var(--dur-fast);
+}
+.prof__list li:hover {
+  color: var(--parchment-100);
+  border-color: var(--accent);
+  transform: translateY(-2px);
+}
+
+/* --------------------------------------------------------------------------
+   Itens do inventário
+   -------------------------------------------------------------------------- */
+
+.item { --rarity: var(--rarity-comum); }
+.item[data-rarity="raro"]     { --rarity: var(--rarity-raro); }
+.item[data-rarity="epico"]    { --rarity: var(--rarity-epico); }
+.item[data-rarity="lendario"] { --rarity: var(--rarity-lendario); }
+
+.item__frame {
+  position: relative;
+  height: 100%;
+  display: grid;
+  gap: .55rem;
+  align-content: start;
+  padding: 1.6rem 1.4rem 1.4rem;
+  background:
+    linear-gradient(rgba(255,255,255,.4), rgba(200,170,120,.12)),
+    var(--parchment-100);
+  border: 1px solid var(--parchment-400);
+  border-top: 3px solid var(--rarity);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+  transform-style: preserve-3d;
+  transition:
+    transform var(--dur) var(--ease-parchment),
+    box-shadow var(--dur);
+}
+
+/* Halo de raridade que acende no hover */
+.item__frame::before {
+  content: "";
+  position: absolute;
+  inset: -40% -10% auto;
+  height: 80%;
+  background: radial-gradient(50% 60% at 50% 0%, var(--rarity), transparent 70%);
+  opacity: 0;
+  transition: opacity var(--dur);
+  pointer-events: none;
+}
+
+.item:hover .item__frame {
+  transform: translateY(-8px) rotateX(4deg);
+  box-shadow: var(--shadow-lift), 0 0 0 1px var(--rarity);
+}
+.item:hover .item__frame::before { opacity: .16; }
+
+.item__rarity {
+  font-family: var(--font-display);
+  font-size: .62rem;
+  letter-spacing: .24em;
+  text-transform: uppercase;
+  color: var(--rarity);
+}
+
+.item__sigil {
+  width: 2.6rem; height: 2.6rem;
+  color: var(--rarity);
+  opacity: .85;
+  margin-bottom: .2rem;
+}
+
+.item__name {
+  font-size: var(--step-1);
+  color: var(--ink-900);
+}
+
+.item__type {
+  font-size: .78rem;
+  font-style: italic;
+  color: var(--ink-fade);
+}
+
+.item__desc {
+  font-size: var(--step--1);
+  line-height: 1.55;
+  color: var(--ink-700);
+}
+
+.item__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  list-style: none;
+  padding: 0;
+  margin-top: .2rem;
+}
+.item__tags li {
+  padding: .15rem .6rem;
+  font-size: .68rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--ink-500);
+  background: rgba(90,70,45,.1);
+  border: 1px solid var(--line);
+  border-radius: 99px;
+}
+
+.item__links {
+  display: flex;
+  gap: .5rem;
+  margin-top: .8rem;
+}
+
+/* --------------------------------------------------------------------------
+   Diário de campanha
+   -------------------------------------------------------------------------- */
+
+.entry { position: relative; }
+
+.entry__node {
+  position: absolute;
+  /* Centro do losango exatamente sobre o eixo do trilho:
+     recua o padding do timeline, avança até o centro do trilho
+     (.82rem + metade dos 2px) e volta meia largura do losango. */
+  left: calc(-1 * var(--timeline-pad) + var(--trail-x) + 1px - (.95rem / 2));
+  top: .35rem;
+  width: .95rem; height: .95rem;
+  rotate: 45deg;
+  background: var(--bg);
+  border: 2px solid var(--accent);
+  box-shadow: 0 0 0 4px var(--bg), 0 0 16px var(--accent-glow);
+}
+
+.entry__when {
+  font-family: var(--font-display);
+  font-size: .7rem;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.entry__what {
+  font-size: var(--step-1);
+  color: var(--parchment-100);
+  margin: .3rem 0 .5rem;
+}
+
+.entry__how {
+  max-width: var(--measure);
+  font-size: var(--step--1);
+  color: var(--text-on-dark-soft);
+}
+
+.entry__loot {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  list-style: none;
+  padding: 0;
+  margin-top: .8rem;
+}
+.entry__loot li {
+  font-family: var(--font-dice);
+  font-size: .85rem;
+  padding: .1rem .7rem;
+  color: var(--gold-300);
+  background: rgba(201,162,39,.08);
+  border: 1px solid var(--line-on-dark);
+}
+
+/* --------------------------------------------------------------------------
+   Pacto
+   -------------------------------------------------------------------------- */
+
+.pact { text-align: center; display: grid; justify-items: center; gap: 1.2rem; }
+
+.pact__seal {
+  width: 7rem; height: 7rem;
+  display: grid;
+  place-items: center;
+  color: var(--parchment-100);
+  background: radial-gradient(circle at 35% 30%, var(--wax-500), var(--wax-600) 60%, #5e160e);
+  border-radius: 50%;
+  box-shadow:
+    inset 0 -4px 10px rgba(0,0,0,.45),
+    inset 0 4px 8px rgba(255,255,255,.18),
+    0 10px 30px -10px rgba(0,0,0,.8);
+}
+.pact__seal svg { width: 62%; opacity: .85; }
+
+/* O Pacto vive numa página de pergaminho claro: a cor vem da tinta.
+   O modificador --dark existe caso a seção volte para o couro. */
+.pact__lead {
+  max-width: 40ch;
+  font-size: var(--step-1);
+  font-style: italic;
+  color: var(--text-soft);
+}
+.page--dark .pact__lead { color: var(--parchment-200); }
+
+.pact__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.4rem;
+  justify-content: center;
+  list-style: none;
+  padding: 0;
+}
+.pact__links a {
+  font-family: var(--font-display);
+  font-size: var(--step--1);
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--accent);
+  padding-bottom: .25rem;
+  border-bottom: 1px solid transparent;
+  transition: border-color var(--dur-fast), color var(--dur-fast);
+}
+.pact__links a:hover { color: var(--gold-300); border-color: currentColor; }
+
+/* --------------------------------------------------------------------------
+   Selos de guilda — certificações
+   -------------------------------------------------------------------------- */
+
+.guild-seal {
+  position: relative;
+  display: grid;
+  gap: .4rem;
+  justify-items: start;
+  padding: 1.6rem 1.5rem;
+  background: linear-gradient(rgba(255,255,255,.4), rgba(200,170,120,.12));
+  border: 1px solid var(--parchment-400);
+  border-left: 3px solid var(--wax-600);
+  box-shadow: var(--shadow-card);
+}
+
+.guild-seal__wax {
+  display: grid;
+  place-items: center;
+  width: 3rem; height: 3rem;
+  margin-bottom: .4rem;
+  color: var(--parchment-100);
+  background: radial-gradient(circle at 35% 30%, var(--wax-500), var(--wax-600) 65%, #5e160e);
+  border-radius: 50%;
+  box-shadow:
+    inset 0 -2px 6px rgba(0,0,0,.45),
+    inset 0 2px 5px rgba(255,255,255,.18),
+    0 6px 16px -6px rgba(0,0,0,.7);
+}
+.guild-seal__wax svg { width: 62%; }
+
+.guild-seal__name { font-size: var(--step-1); color: var(--ink-900); }
+.guild-seal__org  { font-size: var(--step--1); font-style: italic; color: var(--ink-fade); }
+
+.guild-seal__code {
+  margin-top: .5rem;
+  padding: .2rem .6rem;
+  font-family: var(--font-mono);
+  font-size: .72rem;
+  letter-spacing: .04em;
+  color: var(--ink-500);
+  background: rgba(90,70,45,.1);
+  border: 1px dashed var(--line);
+}
+
+/* --------------------------------------------------------------------------
+   Portão da Arena
+   -------------------------------------------------------------------------- */
+
+/* A Arena não pertence à classe do visitante — ela é o selo. Fixamos o
+   accent no roxo das correntes para a seção anunciar o que vem depois,
+   em vez de se camuflar no tema escolhido. */
+#arena {
+  --accent: var(--chain);
+  --accent-soft: var(--chain-hot);
+  --accent-glow: var(--chain-glow);
+}
+
+.gate {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 1rem;
+  width: min(100%, 44rem);
+  margin-inline: auto;
+  padding: clamp(2.2rem, 6vw, 3.5rem) clamp(1.5rem, 5vw, 3rem);
+  text-align: center;
+  background:
+    radial-gradient(80% 70% at 50% 0%, var(--accent-glow), transparent 65%),
+    linear-gradient(rgba(255,255,255,.04), rgba(0,0,0,.35));
+  border: 1px solid var(--accent);
+  box-shadow: var(--shadow-lift), inset 0 0 60px rgba(0,0,0,.5);
+}
+
+.gate__sigil {
+  width: 5rem; height: 5rem;
+  color: var(--accent);
+  animation: pulse-glow 4s ease-in-out infinite;
+}
+
+.gate__title {
+  font-size: var(--step-2);
+  color: var(--parchment-100);
+}
+
+.gate__lead {
+  max-width: 46ch;
+  font-size: var(--step-0);
+  color: var(--text-on-dark-soft);
+}
+
+.gate__specs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  justify-content: center;
+  list-style: none;
+  padding: 0;
+  margin: .4rem 0 .8rem;
+}
+.gate__specs li {
+  padding: .3rem .9rem;
+  font-family: var(--font-display);
+  font-size: .68rem;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--parchment-200);
+  border: 1px solid var(--line-on-dark);
+  border-radius: 99px;
+}
+
+/* O botão está desabilitado de propósito: a Arena ainda não existe.
+   Mantemos a aparência de selo lacrado em vez de esconder o destino. */
+.gate .btn:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
+.gate .btn:disabled:hover {
+  transform: none;
+  box-shadow: none;
+}
+.gate .btn:disabled::after { content: none; }
+
+.gate__note {
+  font-size: var(--step--1);
+  font-style: italic;
+  color: var(--text-on-dark-soft);
+  opacity: .8;
+}
+
+/* --------------------------------------------------------------------------
+   Diário — organização
+   -------------------------------------------------------------------------- */
+
+.entry__org {
+  font-size: var(--step--1);
+  font-style: italic;
+  color: var(--accent);
+  margin-bottom: .5rem;
+}
+
+/* --------------------------------------------------------------------------
+   Rodapé
+   -------------------------------------------------------------------------- */
+
+.footer__mark {
+  font-family: var(--font-display);
+  font-size: var(--step-1);
+  font-weight: 900;
+  letter-spacing: .3em;
+  color: var(--accent);
+  margin-bottom: .6rem;
+}
+
+/* Atribuição exigida pela CC BY 3.0 dos ícones */
+.footer__credits {
+  margin-top: .8rem;
+  font-size: .7rem;
+  color: var(--text-on-dark-soft);
+  opacity: .7;
+}
+.footer__credits a { border-bottom: 1px dotted currentColor; }
+.footer__credits a:hover { color: var(--accent); }
+
+
+/* --------------------------------------------------------------------------
+   Ritual em telas baixas
+   Oito cartas + título + rodapé passam da dobra. Apertamos tudo em vez de
+   esconder a descrição das classes, que é o que ajuda a escolher.
+   -------------------------------------------------------------------------- */
+
+@media (max-height: 900px) {
+  .ritual__title { font-size: var(--step-2); margin: .3rem 0 .5rem; }
+  .ritual__kicker { font-size: .68rem; letter-spacing: .26em; }
+  .ritual__lead { margin-bottom: 1.2rem; font-size: var(--step--1); }
+
+  .classes { gap: .6rem; margin-bottom: 1.1rem; }
+
+  .ritual .class-card { padding: .9rem .85rem; gap: .25rem; }
+  .ritual .class-card__sigil { width: 2.4rem; height: 2.4rem; margin-bottom: 0; }
+  .ritual .class-card__name { font-size: var(--step-0); }
+  .ritual .class-card__tag { font-size: .62rem; }
+  .ritual .class-card__desc { font-size: .76rem; line-height: 1.38; }
+  .ritual .class-card__stat { margin-top: .25rem; padding: .12rem .55rem; font-size: .64rem; }
+}
+
+/* ==========================================================================
+   RITUAL EM DUAS ETAPAS
+   ========================================================================== */
+
+.ritual__content--perfil { display: none; }
+.ritual[data-etapa="perfil"] .ritual__content--classe { display: none; }
+.ritual[data-etapa="perfil"] .ritual__content--perfil { display: block; }
+
+/* --- Cartas de perfil ---------------------------------------------------- */
+
+.perfis {
+  display: grid;
+  gap: .8rem;
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  margin-bottom: 1.6rem;
+  list-style: none;
+  padding: 0;
+}
+
+.perfil-card {
+  position: relative;
+  display: grid;
+  gap: .35rem;
+  justify-items: center;
+  width: 100%;
+  height: 100%;
+  padding: 1.3rem 1rem;
+  text-align: center;
+  background: linear-gradient(rgba(255,255,255,.04), rgba(0,0,0,.3));
+  border: 1px solid var(--line-on-dark);
+  border-radius: var(--radius);
+  transition:
+    transform var(--dur) var(--ease-stamp),
+    border-color var(--dur),
+    box-shadow var(--dur);
+}
+.perfil-card:hover, .perfil-card:focus-visible {
+  transform: translateY(-5px);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent), 0 16px 36px -16px var(--accent-glow);
+}
+.perfil-card.is-picked {
+  border-color: var(--accent);
+  background: linear-gradient(rgba(255,255,255,.09), rgba(0,0,0,.25));
+  box-shadow: 0 0 0 2px var(--accent), 0 0 34px -10px var(--accent-glow);
+}
+.perfil-card.is-picked::after {
+  content: "";
+  position: absolute;
+  top: .5rem; right: .5rem;
+  width: 1rem; height: 1rem;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, var(--wax-500), var(--wax-600) 65%, #5e160e);
+  box-shadow: 0 2px 6px rgba(0,0,0,.6);
+}
+
+.perfil-card__sigil { width: 2.2rem; height: 2.2rem; color: var(--accent); }
+.perfil-card__nome {
+  font-family: var(--font-display);
+  font-size: var(--step-0);
+  font-weight: 700;
+  color: var(--parchment-100);
+}
+.perfil-card__tag {
+  font-size: .62rem;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.perfil-card__desc {
+  font-size: .8rem;
+  line-height: 1.45;
+  color: var(--text-on-dark-soft);
+}
+
+/* --- Seletor de idioma --------------------------------------------------- */
+
+.idioma {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: .9rem;
+  margin-bottom: 1.6rem;
+}
+.idioma__rotulo {
+  font-family: var(--font-display);
+  font-size: .6rem;
+  letter-spacing: .26em;
+  text-transform: uppercase;
+  color: var(--text-on-dark-soft);
+}
+.idioma__troca {
+  display: inline-flex;
+  border: 1px solid var(--line-on-dark);
+  border-radius: 99px;
+  overflow: hidden;
+}
+.idioma__opcao {
+  padding: .35rem 1.1rem;
+  font-family: var(--font-display);
+  font-size: .68rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--text-on-dark-soft);
+  transition: color var(--dur-fast), background-color var(--dur-fast);
+}
+.idioma__opcao:hover { color: var(--parchment-100); }
+.idioma__opcao.is-ativo {
+  color: #1a120b;
+  background: linear-gradient(var(--accent-soft), var(--accent));
+}
+
+/* --- Rodapé da etapa ----------------------------------------------------- */
+
+.ritual__rodape {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.4rem;
+  flex-wrap: wrap;
+}
+.ritual__voltar {
+  font-size: var(--step--1);
+  font-style: italic;
+  color: var(--text-on-dark-soft);
+  border-bottom: 1px dotted currentColor;
+}
+.ritual__voltar:hover { color: var(--parchment-200); }
+
+@media (max-height: 900px) {
+  .ritual .perfil-card { padding: .9rem .85rem; gap: .2rem; }
+  .ritual .perfil-card__sigil { width: 1.8rem; height: 1.8rem; }
+  .ritual .perfil-card__desc { font-size: .74rem; }
+  .perfis { gap: .55rem; margin-bottom: 1.1rem; }
+  .idioma { margin-bottom: 1.1rem; }
+}
